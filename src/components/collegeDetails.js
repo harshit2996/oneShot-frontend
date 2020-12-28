@@ -22,12 +22,21 @@ const CollegeDetails = ({college}) => {
                   console.log(college)
                   if(String(key)!=="__v" && String(key)!=="_id"){
                     if(key==="Average Fees"){
-                      var formatter = new Intl.NumberFormat('en-US', {
+                      var formatter = new Intl.NumberFormat('en-IN', {
                         style: 'currency',
                         currency: 'INR',
-                      });
-                      let formattedFees = formatter.format(Math.ceil(college[key]))
-                      college[key] = formattedFees
+                      })
+                      let formattedFees = formatter.format(college[key])
+                      return (
+                        <TableRow key={index}>
+                          {
+                          }
+                          <TableCell>{key}</TableCell>
+                          <TableCell>{formattedFees}</TableCell>
+                        </TableRow> 
+                      )
+
+
                     }
                     return (
                     <TableRow key={index}>
