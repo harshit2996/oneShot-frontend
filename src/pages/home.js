@@ -1,8 +1,8 @@
 import axios from 'axios'
 import React, { Component} from 'react'
-import {PieChart, Pie, Cell, ResponsiveContainer, Sector,Legend} from 'recharts';
-import { Button, Container} from 'semantic-ui-react';
-import  CollegeListByState  from "./CollegeListByState";
+import {PieChart, Pie, Cell, ResponsiveContainer, Sector,Legend, Label} from 'recharts';
+import { Button, Container, Segment} from 'semantic-ui-react';
+import  CollegeListByState  from "../components/CollegeListByState";
 
 var COLORS = [
   '#0088FE', 
@@ -50,8 +50,8 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   const y = cy  + radius * Math.sin(-midAngle * RADIAN);
  
   return (
-    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} 	dominantBaseline="central">
-    	{`${(percent * 100).toFixed(0)}%`}
+    <text x={x} y={y} fill="white" textAnchor={'center'} className="text-base"	dominantBaseline="central">
+    	{`${(percent * 100)}%`}
     </text>
   );
 };
@@ -76,7 +76,7 @@ const renderActiveShape = (props) => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" className="flex" fill="#ff0000">Colleges Per State</text>
+      <text x={cx} y={cy} dy={8} textAnchor="middle" className="flex" fill={fill}>{payload.name}</text>
       <Sector
         className="cursor-pointer"
         cx={cx}
@@ -98,9 +98,9 @@ const renderActiveShape = (props) => {
       />
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none"/>
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none"/>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} className="text-xl" fill={fill}>{payload.name}</text>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dx={2} dy={15} textAnchor={textAnchor} className="text-base" fill={fill}>
-        {`Colleges (${(percent * 100).toFixed(2)})%`}
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} className="text-base" fill={fill}>{payload.name}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dx={2} dy={20} textAnchor={textAnchor} className="text-xl" fill={fill}>
+        {`${(percent * 100)}%`}
       </text>
     </g>
   );
@@ -145,17 +145,6 @@ class Home extends Component{
   };
   
   componentDidMount(){
-
-    // axios.get('http://api.example.test:3000')
-    // .then(res=>{
-    //   this.setState({colleges:res.data})
-    //   // console.log(this.state.colleges)
-
-    // })
-    // .catch(err=>{
-    //   console.log(err.response)
-    // })
-
     axios.get('http://api.example.test:3000/collegesByStates')
     .then(res=>{
       console.log(res.data)
@@ -170,51 +159,54 @@ class Home extends Component{
 
   render(){    
     return(
-      <div className="min-h-screen flex flex-col bg-gray-700 justify-center">
+      <div className="min-h-screen flex flex-col text-base justify-center">
+          <h3 className="pt-24">Percentage of Colleges Per State</h3>
+          <div className="bg-red col md:flex block">
+            <ResponsiveContainer minHeight="80vh" minWidth={200}>
+              <PieChart> 
+                <Pie
+                  activeIndex={this.state.activeIndex}
+                  activeShape={renderActiveShape}
+                  data={this.state.data}
+                  cx={'50%'}
+                  cy={'50%'}
+                  innerRadius={'50%'}
+                  outerRadius={'80%'}
+                  dataKey="value"
+                  onMouseEnter={this.onPieEnter.bind(this)}
+                  onClick={this.displayCollegesList.bind(this)}
+                  label={renderCustomizedLabel}
+                  labelLine={false}
+                >
+                {
+                  this.state.data.map((entry, index) => <Cell key={`cell-${index}`}  fill={COLORS[index % COLORS.length]} />)
+                }
+                </Pie>
+                
+                <Legend verticalAlign="bottom" className="flex" layout="horizontal" iconSize={12} iconType="circle"/>  
+                <Label content={renderCustomizedLabel}/>              
+              </PieChart>
+            </ResponsiveContainer>
 
-        <div className="bg-red col md:flex block">
-          <ResponsiveContainer minHeight="80vh" minWidth={200}>
-            <PieChart> 
-              <Pie
-                activeIndex={this.state.activeIndex}
-                activeShape={renderActiveShape}
-                data={this.state.data}
-                cx={'50%'}
-                cy={'50%'}
-                innerRadius={'50%'}
-                outerRadius={'80%'}
-                dataKey="value"
-                onMouseEnter={this.onPieEnter.bind(this)}
-                onClick={this.displayCollegesList.bind(this)}
-              >
-              {
-                this.state.data.map((entry, index) => <Cell key={`cell-${index}`}  fill={COLORS[index % COLORS.length]} />)
-              }
-              </Pie>
-              
-              <Legend verticalAlign="bottom" className="flex" layout="horizontal" iconSize={12} iconType="circle"/>                
-            </PieChart>
-          </ResponsiveContainer>
+            {
+              this.state.isActive?
+                  <Container className="md:h-screen overflow-y-hidden justify-center" style={{padding:0,margin:0}}>
+                  <div className="justify-center h-full md:flex w-full">
+                    <div className="self-center md:flex justify-center md:h-4/5">
+                    <div className="bg-red-500 md:bg-transparent">
+                      <Button circular  color="red" onClick={this.hideCollegesList.bind(this)} icon="close"/>
+                    </div>
+                    <CollegeListByState active={this.state.isActive} payload={this.state.p} label={renderCustomizedLabel} />
 
-          {
-            this.state.isActive?
-                <Container className="md:h-screen overflow-y-hidden justify-center" style={{padding:0,margin:0}}>
-                <div className="justify-center h-full md:flex w-full">
-                  <div className="self-center md:flex justify-center md:h-4/5">
-                  <div className="bg-red-500 md:bg-transparent">
-                    <Button circular  color="red" onClick={this.hideCollegesList.bind(this)} icon="close"/>
-                  </div>
-                  <CollegeListByState active={this.state.isActive} payload={this.state.p} label={renderCustomizedLabel} />
+                    </div>
+    
+                  </div>          
 
-                  </div>
-  
-                </div>          
+                  </Container>
 
-                </Container>
-
-            :undefined
-          } 
-        </div>    
+              :undefined
+            } 
+          </div>    
       </div>
 
     )

@@ -1,15 +1,43 @@
-import React from 'react'
-import { Button, Icon, Modal, Table, TableCell, TableRow } from 'semantic-ui-react'
+import axios from 'axios'
+import React, { useState } from 'react'
+import { Button, Checkbox, Form, Icon, Modal, Segment, Table, TableCell, TableRow } from 'semantic-ui-react'
+import CollegeDetails from '../components/collegeDetails'
 
-const CollegeDetails = ({college}) => {
-  const [open, setOpen] = React.useState(false)
-  let collegeName = college["College Name"]
-  return (
-    <Modal
+const Colleges = () =>{
+
+  const [collegeName,setCollegeName] = useState('')
+  const [college,setCollege] = useState(null)
+  const [open,setOpen] = useState(true)
+
+  function getCollege() {
+    console.log(collegeName)
+    axios.post('http://api.example.test:3000/getCollegeDetails',collegeName).then(res=>{
+      console.log(res.data[0])
+      setCollege(res.data[0])
+    })
+  }
+
+  return(
+    <div>
+      <div className="flex justify-center">
+      <Segment className="md:w-1/2" secondary>
+        <Form className="flex" onSubmit={getCollege}>
+      <Form.Field className="flex-1">
+        <label>Enter College Name</label>
+        <input name="collegeName" value={collegeName} onChange={(event) => setCollegeName(event.target.value)} placeholder='College Name' />
+      </Form.Field>
+      <Form.Field className="flex items-stretch  p-2 pb-0">
+        <Button className="self-center" type='submit'>Submit</Button>
+      </Form.Field>
+    </Form>
+      </Segment>
+      </div>
+      {
+        college?(
+          <Modal
       open={open}
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
-      trigger={<div className="stretch h-full w-full hover:bg-yellow-500 p-4" >{collegeName}</div>}
     >
       <Modal.Header style={{backgroundColor:"purple", color:"white"}}>{collegeName}</Modal.Header>
       <Modal.Content image scrolling>
@@ -34,18 +62,10 @@ const CollegeDetails = ({college}) => {
                     }
                     return (
                     <TableRow key={index}>
-                      <TableCell>{key}</TableCell>
-                      <TableCell>
                       {
-                        Array.isArray(college[key])?(college[key].map((element,i) => {
-                          return (<div key={i}>{element}</div>)
-                        }) ):(
-                        
-
-                        college[key]
-                        )
                       }
-                      </TableCell>
+                      <TableCell>{key}</TableCell>
+                      <TableCell>{college[key]}</TableCell>
                     </TableRow> 
                     )
                   }
@@ -64,7 +84,11 @@ const CollegeDetails = ({college}) => {
         </Button>
       </Modal.Actions>
     </Modal>
+        ):undefined
+      }
+      
+    </div>
   )
 }
 
-export default CollegeDetails
+export default Colleges

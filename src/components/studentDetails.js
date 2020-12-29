@@ -1,48 +1,44 @@
 import React from 'react'
 import { Button, Icon, Modal, Table, TableCell, TableRow } from 'semantic-ui-react'
 
-const CollegeDetails = ({college}) => {
+const StudentDetails = ({student,i}) => {
   const [open, setOpen] = React.useState(false)
-  let collegeName = college["College Name"]
+  let studentName = student.firstName + " " + student.lastName
   return (
     <Modal
       open={open}
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
-      trigger={<div className="stretch h-full w-full hover:bg-yellow-500 p-4" >{collegeName}</div>}
+      trigger={<div className="stretch h-full w-full flex hover:bg-yellow-500 p-4" >
+        <div className="col col-shrink">
+        {i+1}.</div>
+        <div className="flex flex-1 justify-center text-center ">{studentName}</div>
+      </div>}
     >
-      <Modal.Header style={{backgroundColor:"purple", color:"white"}}>{collegeName}</Modal.Header>
+      <Modal.Header style={{backgroundColor:"purple", color:"white"}}>{studentName}</Modal.Header>
       <Modal.Content image scrolling>
         <Modal.Description>
           <Table definition striped >
             <Table.Body>
               {
-                Object.keys(college).map((key,index)=> {
-                  if(String(key)!=="__v" && String(key)!=="_id"){
-                    if(key==="Average Fees"){
-                      var formatter = new Intl.NumberFormat('en-IN', {
-                        style: 'currency',
-                        currency: 'INR',
-                      })
-                      let formattedFees = formatter.format(college[key])
-                      return (
-                        <TableRow key={index}>
-                          <TableCell>{key}</TableCell>
-                          <TableCell>{formattedFees}</TableCell>
-                        </TableRow> 
-                      )
-                    }
+                Object.keys(student).map((key,index)=> {
+                  <TableRow key={index}>
+
+                      <TableCell>Name</TableCell>
+                      <TableCell>{studentName}</TableCell>
+                    </TableRow> 
+                  if(String(key)!=="__v" && key!=="firstName" && key!=="lastName"){                   
                     return (
-                    <TableRow key={index}>
+                      <TableRow key={index}>
                       <TableCell>{key}</TableCell>
                       <TableCell>
                       {
-                        Array.isArray(college[key])?(college[key].map((element,i) => {
+                        Array.isArray(student[key])?(student[key].map((element,i) => {
                           return (<div key={i}>{element}</div>)
                         }) ):(
                         
 
-                        college[key]
+                        student[key]
                         )
                       }
                       </TableCell>
@@ -67,4 +63,4 @@ const CollegeDetails = ({college}) => {
   )
 }
 
-export default CollegeDetails
+export default StudentDetails

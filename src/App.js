@@ -1,8 +1,10 @@
 import './App.css';
-import Layout from './components/layouts';
+import Layout from './layouts/layouts';
+import React from "react";
 
 function App() {
   return (
+    
     <div className="App">
       <header className="App-header">
         <Layout/>
