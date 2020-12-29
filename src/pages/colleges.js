@@ -1,7 +1,6 @@
-import axios from 'axios'
+import Axios from '..'
 import React, { useState } from 'react'
-import { Button, Checkbox, Form, Icon, Modal, Segment, Table, TableCell, TableRow } from 'semantic-ui-react'
-import CollegeDetails from '../components/collegeDetails'
+import { Button, Form, Icon, Modal, Segment, Table, TableCell, TableRow } from 'semantic-ui-react'
 
 const Colleges = () =>{
 
@@ -11,7 +10,7 @@ const Colleges = () =>{
 
   function getCollege() {
     console.log(collegeName)
-    axios.post('http://api.example.test:3000/getCollegeDetails',collegeName).then(res=>{
+    Axios.post('http://api.example.test:3000/getCollegeDetails',collegeName).then(res=>{
       console.log(res.data[0])
       setCollege(res.data[0])
     })
@@ -36,14 +35,18 @@ const Colleges = () =>{
         college?(
           <Modal
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={() => {
+        setOpen(false)
+        setCollege(null)
+        setOpen(true)
+      }}
       onOpen={() => setOpen(true)}
     >
       <Modal.Header style={{backgroundColor:"purple", color:"white"}}>{collegeName}</Modal.Header>
       <Modal.Content image scrolling>
         <Modal.Description>
           <Table definition striped >
-            <Table.Body>
+          <Table.Body>
               {
                 Object.keys(college).map((key,index)=> {
                   if(String(key)!=="__v" && String(key)!=="_id"){
@@ -62,10 +65,18 @@ const Colleges = () =>{
                     }
                     return (
                     <TableRow key={index}>
-                      {
-                      }
                       <TableCell>{key}</TableCell>
-                      <TableCell>{college[key]}</TableCell>
+                      <TableCell>
+                      {
+                        Array.isArray(college[key])?(college[key].map((element,i) => {
+                          return (<div key={i}>{element}</div>)
+                        }) ):(
+                        
+
+                        college[key]
+                        )
+                      }
+                      </TableCell>
                     </TableRow> 
                     )
                   }
@@ -79,7 +90,11 @@ const Colleges = () =>{
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
-        <Button color="purple" onClick={() => setOpen(false)}>
+        <Button color="purple" onClick={() => {
+        setOpen(false)
+        setCollege(null)
+        setOpen(true)
+      }}>
           <Icon name='arrow left' /> Back
         </Button>
       </Modal.Actions>

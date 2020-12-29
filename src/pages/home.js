@@ -1,8 +1,8 @@
-import axios from 'axios'
-import React, { Component} from 'react'
+import Axios from '..'
 import {PieChart, Pie, Cell, ResponsiveContainer, Sector,Legend, Label} from 'recharts';
-import { Button, Container, Segment} from 'semantic-ui-react';
+import { Button, Container} from 'semantic-ui-react';
 import  CollegeListByState  from "../components/CollegeListByState";
+import { Component } from 'react';
 
 var COLORS = [
   '#0088FE', 
@@ -51,7 +51,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
  
   return (
     <text x={x} y={y} fill="white" textAnchor={'center'} className="text-base"	dominantBaseline="central">
-    	{`${(percent * 100)}%`}
+    	{`${(percent * 100).toFixed(0)}%`}
     </text>
   );
 };
@@ -100,7 +100,7 @@ const renderActiveShape = (props) => {
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none"/>
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} className="text-base" fill={fill}>{payload.name}</text>
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dx={2} dy={20} textAnchor={textAnchor} className="text-xl" fill={fill}>
-        {`${(percent * 100)}%`}
+        {`${(percent * 100).toFixed(0)}%`}
       </text>
     </g>
   );
@@ -145,16 +145,13 @@ class Home extends Component{
   };
   
   componentDidMount(){
-    axios.get('http://api.example.test:3000/collegesByStates')
+    Axios.get('/collegesByStates')
     .then(res=>{
-      console.log(res.data)
       this.setState({data:res.data})
-
     })
     .catch(err=>{
       console.log(err.response)
     })
-    
   }
 
   render(){    
@@ -208,7 +205,6 @@ class Home extends Component{
             } 
           </div>    
       </div>
-
     )
   }
 }

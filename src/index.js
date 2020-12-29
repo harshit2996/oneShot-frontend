@@ -5,6 +5,14 @@ import './tailwind.css';
 import 'semantic-ui-css/semantic.min.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import axios from 'axios'
+
+const Axios = axios.create({
+  baseURL : process.env.REACT_APP_API_BASE_URL
+})
+
+export default Axios
+
 ReactDOM.render(
     <App />,
   // <React.StrictMode>
