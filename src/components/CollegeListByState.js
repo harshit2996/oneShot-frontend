@@ -32,7 +32,7 @@ const CollegeListByState = ( { active, payload, label } )=>{
     
     return(
       
-      <div className="bg-yellow-100 h-full flex-col flex text-base md:rounded-xl md:mx-12">
+      <div className="bg-yellow-100 h-full flex-col flex text-base md:rounded-xl md:mx-6">
         <div className="border-b-2 border-black border-solid md:rounded-t-xl p-4 text-black bg-red-200">
           <div className="self-center">{payload[0].name}</div>
         </div>

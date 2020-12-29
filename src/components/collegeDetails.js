@@ -3,7 +3,6 @@ import { Button, Icon, Modal, Table, TableCell, TableRow } from 'semantic-ui-rea
 
 const CollegeDetails = ({college}) => {
   const [open, setOpen] = React.useState(false)
-  console.log(college["College Name"])
   let collegeName = college["College Name"]
   return (
     <Modal
@@ -19,7 +18,6 @@ const CollegeDetails = ({college}) => {
             <Table.Body>
               {
                 Object.keys(college).map((key,index)=> {
-                  console.log(college)
                   if(String(key)!=="__v" && String(key)!=="_id"){
                     if(key==="Average Fees"){
                       var formatter = new Intl.NumberFormat('en-IN', {
